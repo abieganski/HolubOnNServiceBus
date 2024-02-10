@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{961AA9DF-C
 	ProjectSection(SolutionItems) = preProject
 		docs\map.png = docs\map.png
 		docs\context map.png = docs\context map.png
-		docs\readme.md = docs\readme.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientUI", "src\ClientUI\ClientUI.csproj", "{5D07FFCD-6EEE-4FEA-94FE-96D82D5DC4BB}"
