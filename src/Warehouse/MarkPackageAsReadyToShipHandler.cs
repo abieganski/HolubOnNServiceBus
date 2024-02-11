@@ -12,16 +12,16 @@ namespace Warehouse
 
         public async Task Handle(MarkPackageAsReadyToShip message, IMessageHandlerContext context)
         {
-            log.Info($"Warehouse has received {message.GetType()}, OrderId = {message.OrderId}");
+            log.Info($"Warehouse has received {message.GetType()}, OrderId = {message.PickListId}");
             
             
             // todo: mark package as ready to ship in the db
             
             
             
-            var packageReadyToShip = new PackageReadyToShip(message.OrderId);
+            var packageReadyToShip = new PackageReadyToShip(message.PickListId);
             
-            log.Info($"Publishing {packageReadyToShip.GetType()}, OrderId = {message.OrderId}");
+            log.Info($"Publishing {packageReadyToShip.GetType()}, OrderId = {message.PickListId}");
             await context.Publish(packageReadyToShip);
         }
     }

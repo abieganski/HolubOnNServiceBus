@@ -2,5 +2,5 @@
 
 namespace Messages
 {
-    public record MarkPackageAsReadyToShip(string OrderId) : ICommand;
+    public record MarkPackageAsReadyToShip(string PickListId) : ICommand;
 }

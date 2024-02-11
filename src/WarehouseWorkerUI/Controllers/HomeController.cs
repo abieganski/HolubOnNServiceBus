@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,8 @@ using Messages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using WarehouseWorkerUI.PickLists;
+using WarehouseWorkerUI.PickLists.DataModels;
 
 namespace WarehouseWorkerUI.Controllers
 {
@@ -14,38 +17,37 @@ namespace WarehouseWorkerUI.Controllers
     {
         static int messagesSent;
         private readonly ILogger<HomeController> _log;
+        private readonly IProvidePickLists _providePickLists;
         private readonly IMessageSession _messageSession;
 
-        public HomeController(IMessageSession messageSession, ILogger<HomeController> logger)
+        public HomeController(IMessageSession messageSession, ILogger<HomeController> logger, IProvidePickLists providePickLists)
         {
             _messageSession = messageSession;
             _log = logger;
+            _providePickLists = providePickLists;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<PickList> pickLists = await _providePickLists.GetPickLists();
+            return View(pickLists);
         }
 
         [HttpPost]
-        public async Task<ActionResult> MarkAsReadyToShip()
+        public async Task<ActionResult> MarkAsReadyToShip(string pickListId)
         {
-            string orderId = Guid.NewGuid().ToString().Substring(0, 8);
 
-            var command = new MarkPackageAsReadyToShip(orderId);
+            var command = new MarkPackageAsReadyToShip(pickListId);
 
             // Send the command
             await _messageSession.Send(command)
                 .ConfigureAwait(false);
 
-            _log.LogInformation($"Sending {command.GetType()}, OrderId = {orderId}");
+            _log.LogInformation($"Sending {command.GetType()}, PickListId = {pickListId}");
 
-            dynamic model = new ExpandoObject();
-            model.OrderId = orderId;
-            model.MessagesSent = Interlocked.Increment(ref messagesSent);
 
-            return View(model);
+            return View();
         }
     }
 }
